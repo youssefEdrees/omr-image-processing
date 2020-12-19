@@ -42,7 +42,7 @@ def my_show_images(images,titles=None, row_max=1, dpi=200):
         n += 1
     fig.set_size_inches(np.array(fig.get_size_inches()) * n_ims/row_max)
     plt.show() 
-    
+
 
 def my_show_hist(img):
     img = (img * 255).astype(np.uint8) if img.dtype != np.uint8 else img
