@@ -66,3 +66,36 @@ def my_close(src, kernel):
     dilated = cv2.dilate(src, kernel)
     return cv2.erode(dilated, kernel)
 
+
+def my_open(src, kernel):
+    dilated = cv2.erode(src, kernel)
+    return cv2.dilate(dilated, kernel)
+
+
+def get_distance_between_staves(img_binary_bg_white):
+    img_height = img_binary_bg_white.shape[0]
+    
+    flattened = img_binary_bg_white.T.flatten()
+    flattened_indices = np.arange(0, flattened.shape[0], 1, np.uint32)
+    flattened[flattened_indices % img_height == 0] = False # Separate each column with a black pixel
+    
+    image, contours, hierarchy = cv2.findContours((flattened*255).astype(np.uint8), 
+                                              cv2.RETR_TREE, 
+                                              cv2.CHAIN_APPROX_SIMPLE)
+    
+    # We refer to length as the vertical distance between 2 black pixels
+    length_freq = np.zeros((img_height), dtype=np.uint32) # No contour can be taller than img_height because we separated each column with a black pixel
+    all_possible_lengths = np.arange(0, img_height, 1, dtype=np.uint32)
+    for i in contours:
+        contour_y = i.T[1]
+        length = contour_y[0][1] - contour_y[0][0] if len(contour_y[0]) == 2 else 1
+        length_freq[length] += 1
+        
+    return all_possible_lengths[length_freq == length_freq.max()][0]
+
+
+def get_line_separation_kernel_size_from_distance_between_staves(distance_between_staves):
+    if distance_between_staves % 2 == 0:
+        return distance_between_staves + 9
+    else:
+        return distance_between_staves + 8
