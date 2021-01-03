@@ -207,31 +207,7 @@ def test1(derotated_croped_gray,distance_between_staves,thickness):
     return musical_lines_mask,contours_filtered
 
 
-# In[5]:
 
-
-tests = []
-for  i in range(11,33):
-    tests.append(cv.imread('PublicTestCases\\test-set-camera-captured\\test-cases\\' +str(i)+'.jpg', cv.IMREAD_GRAYSCALE))
-
-
-# In[10]:
-
-
-tests = []
-for  i in range(1,10):
-    tests.append(cv.imread('PublicTestCases\\test-set-scanned\\test-cases\\' +str(i)+'.PNG', cv.IMREAD_GRAYSCALE))
-
-
-# In[11]:
-
-
-for i in range(9):
-    lines = get_lines(tests[i])
- 
-
-
-# In[ ]:
 
 
 
