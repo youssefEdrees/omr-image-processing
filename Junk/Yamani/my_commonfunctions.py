@@ -89,11 +89,16 @@ def get_distance_between_staves_and_staff_thickness(img_binary_bg_white):
                                                             cv2.RETR_TREE, 
                                                             cv2.CHAIN_APPROX_SIMPLE)
 
-    image, contours_thickness, hierarchy = cv2.findContours(((~flattened)*255).astype(np.uint8), 
+    flattened = ~flattened # For thickness
+    flattened[flattened_indices % img_height == 0] = False # Separate each column with a black pixel
+    image, contours_thickness, hierarchy = cv2.findContours((flattened*255).astype(np.uint8), 
                                                             cv2.RETR_TREE, 
                                                             cv2.CHAIN_APPROX_SIMPLE)
 
-    return most_frequent_white_length(img_height, contours_distance), most_frequent_white_length(img_height, contours_thickness)
+    distance_between_staves = most_frequent_white_length(img_height, contours_distance)
+    staff_thickness = most_frequent_white_length(img_height, contours_thickness)
+
+    return distance_between_staves, staff_thickness
 
 
 def most_frequent_white_length(img_height, contours):
